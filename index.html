@@ -327,20 +327,16 @@
   .stat b.pop{animation:statPop .4s cubic-bezier(.34,1.56,.64,1);}
   @keyframes statPop{0%{transform:scale(1);}55%{transform:scale(1.14);}100%{transform:scale(1);}}
 
-  /* ============== CUSTOM CURSOR ============== */
-  #cursorDot,#cursorRing{position:fixed;top:0;left:0;z-index:300;pointer-events:none;
+  /* ============== CUSTOM CURSOR (EMOJI) ============== */
+  #cursorEmoji{position:fixed;top:0;left:0;z-index:300;pointer-events:none;
     transform:translate(-50%,-50%);}
-  #cursorDot{width:8px;height:8px;border-radius:50%;background:var(--ink);}
-  #cursorRing{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    transition:width .18s cubic-bezier(.2,.9,.3,1),height .18s cubic-bezier(.2,.9,.3,1),
-      border-color .18s ease,background .18s ease;}
-  #cursorRing span{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;opacity:0;transition:opacity .15s ease;white-space:nowrap;}
-  #cursorRing.hot{width:66px;height:66px;background:var(--yellow);border-color:var(--ink);}
-  #cursorRing.hot span{opacity:1;}
+  #cursorEmojiInner{display:inline-block;font-size:26px;line-height:1;user-select:none;
+    transform:scale(1) rotate(0deg);
+    transition:transform .18s cubic-bezier(.2,.9,.3,1);
+    filter:drop-shadow(2px 2px 0 rgba(0,0,0,.15));}
+  #cursorEmoji.hot #cursorEmojiInner{transform:scale(1.4) rotate(-10deg);}
   body.has-cursor,body.has-cursor a,body.has-cursor button{cursor:none;}
-  @media (pointer:coarse){ #cursorDot,#cursorRing{display:none;} }
+  @media (pointer:coarse){ #cursorEmoji{display:none;} }
 
   /* ============== CARD TILT ============== */
   .proj,.skill-card{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease;
@@ -403,7 +399,7 @@
     .proj-modal-card{transition:none!important;}
     .blob,.marquee-in,.badge-spin .ring,.avatar-card,.sticker,.brand .dot,
     .hero h1 .wave,.hero h1 .pop::after,.tagpill .live{animation:none!important;}
-    #cursorDot,#cursorRing{display:none!important;}
+    #cursorEmoji{display:none!important;}
     body.has-cursor,body.has-cursor a,body.has-cursor button{cursor:auto!important;}
     .proj,.skill-card{transition:box-shadow .2s ease!important;}
   }
@@ -413,8 +409,7 @@
 <body>
 
 <div class="scrollbar" aria-hidden="true"><div class="scrollbar-fill" id="scrollFill"></div></div>
-<div id="cursorRing" aria-hidden="true"><span id="cursorHint"></span></div>
-<div id="cursorDot" aria-hidden="true"></div>
+<div id="cursorEmoji" aria-hidden="true"><span id="cursorEmojiInner">✨</span></div>
 <div class="egg-toast" id="eggToast" role="status"></div>
 
 <div class="proj-modal" id="projModal" aria-hidden="true">
@@ -1282,33 +1277,34 @@ var DATA = JSON.parse(document.getElementById('page-data').textContent);
     });
   })();
 
-  /* ---- custom cursor: a dot plus a ring that grows over clickable things ---- */
+  /* ---- custom cursor: an emoji that follows the mouse and reacts to what it's over ---- */
   (function(){
     if(reduce || window.matchMedia('(pointer:coarse)').matches) return;
-    var dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing'),
-        hint = document.getElementById('cursorHint');
-    if(!dot || !ring) return;
-    var active = false, ringX=0, ringY=0, targetX=0, targetY=0;
+    var el = document.getElementById('cursorEmoji'), inner = document.getElementById('cursorEmojiInner');
+    if(!el || !inner) return;
+    var active = false;
+    var DEFAULT_EMOJI = '✨';
+    function emojiFor(t){
+      if(t.matches('.proj')) return '👀';
+      if(t.matches('.skill-card')) return '⚡';
+      if(t.matches('.filter-chip')) return '🎯';
+      if(t.matches('.nav-cta, .btn, .cbtn, button')) return '🚀';
+      if(t.matches('a')) return '🔗';
+      return '👉';
+    }
     window.addEventListener('pointermove', function(e){
-      if(!active){ active = true; document.body.classList.add('has-cursor'); ringX = targetX = e.clientX; ringY = targetY = e.clientY; }
-      dot.style.transform = 'translate('+e.clientX+'px,'+e.clientY+'px) translate(-50%,-50%)';
-      targetX = e.clientX; targetY = e.clientY;
+      if(!active){ active = true; document.body.classList.add('has-cursor'); }
+      el.style.transform = 'translate('+e.clientX+'px,'+e.clientY+'px) translate(-50%,-50%)';
     }, {passive:true});
-    (function raf(){
-      ringX += (targetX - ringX) * 0.18; ringY += (targetY - ringY) * 0.18;
-      ring.style.transform = 'translate('+ringX+'px,'+ringY+'px) translate(-50%,-50%)';
-      requestAnimationFrame(raf);
-    })();
     document.addEventListener('mouseover', function(e){
       var t = e.target.closest('a, button, .proj, .skill-card, .filter-chip');
-      if(!t){ ring.classList.remove('hot'); if(hint) hint.textContent=''; return; }
-      ring.classList.add('hot');
-      if(hint) hint.textContent = (t.matches('.proj') ? 'Read' : t.matches('.skill-card') ? '' :
-        t.matches('.filter-chip') ? 'Filter' : 'View');
+      if(!t){ el.classList.remove('hot'); inner.textContent = DEFAULT_EMOJI; return; }
+      el.classList.add('hot');
+      inner.textContent = emojiFor(t);
     });
     document.addEventListener('mouseout', function(e){
       if(!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('a, button, .proj, .skill-card, .filter-chip')){
-        ring.classList.remove('hot'); if(hint) hint.textContent='';
+        el.classList.remove('hot'); inner.textContent = DEFAULT_EMOJI;
       }
     });
   })();
