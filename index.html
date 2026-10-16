@@ -5,7 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Aaron Nagabathula | Software Engineer</title>
-<meta name="description" content="Software engineer building backend, full-stack and cloud systems in Python, TypeScript and C#, deployed on AWS and Azure." />
+<meta name="description" content="Software engineer building backend, full-stack and cloud systems in Python, TypeScript, Go and C#, deployed on AWS and Azure." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -547,8 +547,8 @@
           </g>
         </svg>
       </div>
-      <span class="sticker s1">Python · TS · C#</span>
-      <span class="sticker s2">590+ tests written</span>
+      <span class="sticker s1">Python · TS · Go · C#</span>
+      <span class="sticker s2">630+ tests written</span>
       <span class="sticker s3">London, UK</span>
     </div>
   </div>
@@ -571,7 +571,7 @@
     <div class="about">
       <div class="about-card rv">
         <p>My path into software engineering started in data. Before moving to the UK, I spent four years as a <strong>Quality Analyst</strong>, reviewing datasets for international clients including Forbes and Australian universities. That is where I learned to care about what a pattern in the data actually means, not just that it is there.</p>
-        <p>Since relocating to London I have been completing my <strong>MSc in Cloud Computing</strong> at the University of East London, while working across cloud engineering, data advisory and digital operations. Along the way I have written the backend, the frontend, the tests and the infrastructure for every project on this page: a TypeScript payments platform, Python APIs and tools, and C#/.NET serverless functions.</p>
+        <p>Since relocating to London I have been completing my <strong>MSc in Cloud Computing</strong> at the University of East London, while working across cloud engineering, data advisory and digital operations. Along the way I have written the backend, the frontend, the tests and the infrastructure for every project on this page: a TypeScript payments platform, a Go payroll engine, Python APIs and tools, and C#/.NET serverless functions.</p>
         <p>That shows up as a habit now: proper access control, observability, and quality gates, not a demo that only survives the happy path. I am just as comfortable explaining a design tradeoff to stakeholders as I am debugging a race condition in a payment flow. I build with AI coding tools every day, and keep the decisions that matter deterministic and tested.</p>
       </div>
       <div class="facts rv" id="facts"></div>
@@ -639,22 +639,22 @@
 -->
 <script id="page-data" type="application/json">
 {
-  "lede": "Software engineer in London building backend, full-stack and cloud systems in Python, TypeScript and C#. I own the whole thing: data model, API, UI, tests, CI and the infrastructure it runs on in AWS and Azure. MSc Cloud Computing (placement year) at the University of East London.",
+  "lede": "Software engineer in London building backend, full-stack and cloud systems in Python, TypeScript, Go and C#. I own the whole thing: data model, API, UI, tests, CI and the infrastructure it runs on in AWS and Azure. MSc Cloud Computing (placement year) at the University of East London.",
   "stats": [
     {
       "n": "6+",
       "l": "Years in tech"
     },
     {
-      "n": "3",
+      "n": "4",
       "l": "Languages shipped"
     },
     {
-      "n": "11",
+      "n": "12",
       "l": "Shipped projects"
     },
     {
-      "n": "590+",
+      "n": "630+",
       "l": "Automated tests"
     }
   ],
@@ -683,6 +683,7 @@
   "marquee": [
     "PYTHON",
     "TYPESCRIPT",
+    "GO",
     "C# / .NET",
     "REACT",
     "FASTAPI",
@@ -703,6 +704,7 @@
       "items": [
         "Python",
         "TypeScript",
+        "Go",
         "C# / .NET 10",
         "SQL",
         "React + Vite",
@@ -802,6 +804,23 @@
         "Helm"
       ],
       "link": "https://github.com/mithil2k2000-tech/fintech-network"
+    },
+    {
+      "title": "UK Payroll Engine",
+      "cat": "Go · Payroll and HR tech",
+      "sub": "A UK payroll engine and JSON API in Go for 2026-27: PAYE, National Insurance, student loans and pensions, with a live demo running in the browser.",
+      "problem": "Payroll is a domain where nearly right is wrong: one rounding step out and a payslip is a penny off, which is a support ticket and a compliance problem.",
+      "idea": "Implement HMRC's own published specification exactly, keep floats away from money entirely, and test against HMRC's own worked examples.",
+      "flow": "Gross pay → <b>pension</b> (net pay, relief at source or salary sacrifice) → <b>PAYE exact percentage method</b> → <b>Class 1 NI</b> → student loans → payslip, employer cost and <b>HMRC liability</b>",
+      "result": "Matches HMRC's worked examples to the penny, and CI checks the built Docker image against them. Covers cumulative and Week 1/Month 1 codes, K codes and the 50% limit, Scottish and Welsh rates, six NI categories and payroll runs of up to 5,000 employees. The same engine is compiled to WebAssembly for the live demo.",
+      "tags": [
+        "Go",
+        "REST API",
+        "WebAssembly",
+        "Docker",
+        "OpenAPI"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/uk-payroll-engine"
     },
     {
       "title": "Enterprise Knowledge AI",
