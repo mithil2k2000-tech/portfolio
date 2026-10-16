@@ -548,7 +548,7 @@
         </svg>
       </div>
       <span class="sticker s1">Python · TS · Go · C#</span>
-      <span class="sticker s2">630+ tests written</span>
+      <span class="sticker s2">700+ tests written</span>
       <span class="sticker s3">London, UK</span>
     </div>
   </div>
@@ -650,11 +650,11 @@
       "l": "Languages shipped"
     },
     {
-      "n": "12",
+      "n": "13",
       "l": "Shipped projects"
     },
     {
-      "n": "630+",
+      "n": "700+",
       "l": "Automated tests"
     }
   ],
@@ -688,6 +688,7 @@
     "REACT",
     "FASTAPI",
     "FASTIFY",
+    "DBT",
     "POSTGRESQL",
     "AWS",
     "AZURE",
@@ -750,6 +751,9 @@
       "name": "Data and AI",
       "items": [
         "PostgreSQL",
+        "Semantic layers",
+        "Data contracts",
+        "dbt",
         "RAG pipelines",
         "Claude API",
         "Qdrant",
@@ -804,6 +808,24 @@
         "Helm"
       ],
       "link": "https://github.com/mithil2k2000-tech/fintech-network"
+    },
+    {
+      "title": "CX Analytics Platform",
+      "cat": "Data and AI · Governed analytics",
+      "sub": "A governed analytics platform for a multi-client contact centre: data contracts, a dbt star schema, a semantic metrics layer, a CXO dashboard and an AI analyst that cannot invent numbers.",
+      "problem": "Executives stop trusting dashboards when two reports disagree, and an AI assistant over raw tables can hallucinate figures or leak personal data.",
+      "idea": "Define every KPI once in a semantic layer, enforce data contracts at the door, and let the AI choose only what to look up, never what the answer is.",
+      "flow": "Raw feeds → <b>data contracts</b> (quarantine + audit) → bronze → <b>dbt silver/gold star schema</b> (SCD2, pseudonymised PII) → <b>semantic layer</b> → CXO dashboard and <b>AI analyst</b>",
+      "result": "21 dbt tests including reconciliations to the penny, 50 Python tests, and a 27-question evaluation set for the analyst, all in CI on every push. The dashboard surfaces computed insights, such as one client's margin falling from 39% to 22% as handle time crept up, and publishes dbt lineage alongside.",
+      "tags": [
+        "dbt",
+        "DuckDB",
+        "SQL",
+        "Python",
+        "Claude API",
+        "Data governance"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/cx-analytics-platform"
     },
     {
       "title": "UK Payroll Engine",
