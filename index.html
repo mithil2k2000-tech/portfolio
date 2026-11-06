@@ -678,7 +678,7 @@
       "l": "Languages shipped"
     },
     {
-      "n": "13",
+      "n": "17",
       "l": "Shipped projects"
     },
     {
@@ -871,6 +871,78 @@
         "OpenAPI"
       ],
       "link": "https://github.com/mithil2k2000-tech/uk-payroll-engine"
+    },
+    {
+      "title": "Secure LLM Gateway",
+      "cat": "AI security · Governance",
+      "sub": "A retrieval-augmented policy assistant built to stay safe even when its model is fooled, with a red-team suite that gates every pull request and a full AI governance pack.",
+      "problem": "Most LLM guardrails are a single prompt-injection filter, and my own research showed cheap detectors are easy to evade. Once the filter is bypassed, the model can leak data or its instructions.",
+      "idea": "Assume the detector will be bypassed. Enforce access control in retrieval, quarantine poisoned documents at ingest, detect leaks with a per-request canary, and clean every answer before it leaves.",
+      "flow": "Question → <b>input checks</b> (normalise, injection score, PII redaction) → <b>role-filtered retrieval</b> → spotlighted prompt with canary → model → <b>output checks</b> (leaks, images, links, PII, citations) → <b>hash-chained audit log</b>",
+      "result": "25 attacks mapped to the OWASP Top 10 for LLM Applications: attack success fell from 100% without guardrails to 4% with them, with the one remaining paraphrase recorded as a known gap, and all 14 normal questions still answered correctly. 20 tests, Bandit, pip-audit and a Trivy-scanned container in CI. Governance pack: system card, risk register, NIST AI RMF, EU AI Act screening, ISO/IEC 42001, DPIA.",
+      "tags": [
+        "Python",
+        "FastAPI",
+        "LLM security",
+        "OWASP LLM Top 10",
+        "AI governance",
+        "Docker"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/secure-llm-gateway"
+    },
+    {
+      "title": "Azure Secure Landing Zone",
+      "cat": "Azure · Infrastructure as code",
+      "sub": "A secure-by-default Azure foundation in Terraform: hub-and-spoke networking, Azure Policy as code and a pipeline with security gates.",
+      "problem": "Cloud environments drift into insecure states when guardrails live in people's heads or in portal clicks.",
+      "idea": "Express every control as code, test it in CI before it reaches Azure, and give the pipeline only the access it needs.",
+      "flow": "Pull request → <b>Gitleaks, tflint, Checkov, Trivy</b>, policy lint → plan with a <b>read-only OIDC identity</b> → reviewed apply → hub-and-spoke VNets + <b>Azure Policy initiative</b> + central logging",
+      "result": "Six custom policy definitions in an initiative (allowed regions, required tags, no public IPs, no internet RDP/SSH, secure storage, Key Vault purge protection), VNet flow logs, Key Vault and a budget alert. No stored secrets: separate plan and apply identities over OIDC, with the apply identity's role-assignment rights limited by an ABAC condition. Six decision records and a NIST 800-53 / CIS mapping.",
+      "tags": [
+        "Azure",
+        "Terraform",
+        "Azure Policy",
+        "GitHub Actions",
+        "Checkov",
+        "Trivy"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/azure-secure-landing-zone"
+    },
+    {
+      "title": "AWS Three-Tier Application",
+      "cat": "AWS · Well-Architected",
+      "sub": "A three-tier web app on AWS, reviewed against all six Well-Architected pillars, that serves HTTPS without owning a domain and has no public load balancer.",
+      "problem": "A typical AWS demo puts a public load balancer in front of the app and needs a domain for HTTPS, which also blocked my earlier deployment.",
+      "idea": "Put CloudFront in front, use its own certificate, and reach a private load balancer through a VPC origin so nothing but the edge faces the internet.",
+      "flow": "Viewer → <b>CloudFront</b> → private S3 (static site) and <b>internal ALB</b> via VPC origin → <b>ECS Fargate</b> (ARM64) → <b>RDS PostgreSQL</b> in isolated subnets",
+      "result": "Deploys from GitHub Actions over OIDC, with a deploy role that can only create IAM roles carrying a permissions boundary. ECS circuit breaker rollback, autoscaling, eight CloudWatch alarms, GuardDuty alerts and a budget. Checkov and Trivy clean in CI. About $3.25 a day when running, designed to be torn down after demos.",
+      "tags": [
+        "AWS",
+        "Terraform",
+        "ECS Fargate",
+        "RDS",
+        "CloudFront",
+        "Well-Architected"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/aws-three-tier"
+    },
+    {
+      "title": "Azure Lakehouse",
+      "cat": "Data engineering · Azure",
+      "sub": "A medallion lakehouse for card-payment data on ADLS Gen2 and Delta Lake, with data contracts, history-keeping dimensions and GDPR erasure.",
+      "problem": "Pipelines that silently drop bad rows, double count re-sent events or keep raw card numbers make every downstream report untrustworthy.",
+      "idea": "Validate against contracts and quarantine failures, load exactly once, tokenise personal data on the way in, and refuse to finish if gold doesn't reconcile to silver.",
+      "flow": "Source events → <b>bronze</b> (raw, idempotent) → <b>contracts + quarantine</b> → <b>silver</b> (MERGE, tokenised PII, SCD2 merchants) → <b>gold</b> facts and KPIs → reconciliation gate",
+      "result": "A 5-day simulated load of about 4,100 events: duplicates and cross-day re-sends caught, 74 bad records quarantined with reasons, late data restating only the affected days, and gold matching silver to the penny. Erasure removes a customer from every layer and vacuums the old files. Terraform with Entra-only storage and a managed identity per container; under £2 a month.",
+      "tags": [
+        "Python",
+        "Delta Lake",
+        "DuckDB",
+        "Azure",
+        "Terraform",
+        "Data governance"
+      ],
+      "link": "https://github.com/mithil2k2000-tech/azure-lakehouse"
     },
     {
       "title": "Enterprise Knowledge AI",
@@ -1119,7 +1191,7 @@ var DATA = JSON.parse(document.getElementById('page-data').textContent);
   document.getElementById('projList').innerHTML = DATA.projects.map(function(p,i){
     return '<article class="proj rv" data-tags="'+esc(p.tags.join('|'))+'">'+
       '<div class="proj-top c'+(i+1)+'"><div>'+
-        '<span class="proj-n">Project 0'+(i+1)+'</span>'+
+        '<span class="proj-n">Project '+String(i+1).padStart(2,'0')+'</span>'+
         '<h3>'+esc(p.title)+'</h3>'+
         '<p class="sub">'+esc(p.sub)+'</p>'+
       '</div></div>'+
@@ -1338,7 +1410,7 @@ var DATA = JSON.parse(document.getElementById('page-data').textContent);
     if(!projModal || !p) return;
     lastProjTrigger = document.activeElement;
     document.getElementById('projModalTop').innerHTML =
-      '<span class="proj-modal-n">Project 0'+(i+1)+'</span>'+
+      '<span class="proj-modal-n">Project '+String(i+1).padStart(2,'0')+'</span>'+
       '<h3>'+esc(p.title)+'</h3>'+
       '<span class="cat">'+esc(p.cat)+'</span>'+
       '<p class="sub">'+esc(p.sub)+'</p>';
